@@ -24,6 +24,11 @@ function App() {
       )
     );
   };
+  const deleteTodo = (id) => {
+    setTodoList((prevTodoList) =>
+      prevTodoList.filter((todoItem) => todoItem.id !== id)
+    );
+  };
   useEffect(() => {
     console.log(todoList);
   }, [todoList]);
@@ -88,6 +93,7 @@ function App() {
                 <DeleteIcon
                   width={25}
                   height={25}
+                  onClick={() => deleteTodo(todoItem.id)}
                   style={{ cursor: "pointer" }}
                 />
               </div>
