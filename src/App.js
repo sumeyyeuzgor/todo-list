@@ -9,8 +9,20 @@ function App() {
   const [todo, setTodo] = useState("");
   const [todoList, setTodoList] = useState([]);
   const addTodo = () => {
-    setTodoList((prevState) => [...prevState, { id: uuid(), todo }]);
+    setTodoList((prevTodoList) => [
+      ...prevTodoList,
+      { id: uuid(), todo, isCompleted: false },
+    ]);
     setTodo("");
+  };
+  const setTodoCompleted = (id) => {
+    setTodoList((prevTodoList) =>
+      prevTodoList.map((todoItem) =>
+        todoItem.id === id
+          ? { ...todoItem, isCompleted: !todoItem.isCompleted }
+          : todoItem
+      )
+    );
   };
   useEffect(() => {
     console.log(todoList);
@@ -45,13 +57,39 @@ function App() {
               key={todoItem.id}
               className="d-flex justify-content-between align-items-center "
             >
-              <div className="d-flex  justify-content-center align-items-center ">
-                <Form.Check type="checkbox" label="" />
-                <div>{todoItem.todo}</div>
+              <div
+                className="d-flex  justify-content-center align-items-center "
+                style={{ cursor: "pointer" }}
+              >
+                <Form.Check
+                  type="checkbox"
+                  value={todoItem.isCompleted}
+                  label=""
+                  id={todoItem.id}
+                  onChange={() => setTodoCompleted(todoItem.id)}
+                  style={{ cursor: "pointer" }}
+                />
+                <label
+                  style={{ cursor: "pointer" }}
+                  htmlFor={todoItem.id}
+                  className={`h5 ${
+                    todoItem.isCompleted ? "text-decoration-line-through" : ""
+                  }`}
+                >
+                  {todoItem.todo}
+                </label>
               </div>
               <div className="d-flex gap-3  justify-content-center align-items-center ">
-                <EditIcon width={25} height={25} />
-                <DeleteIcon width={25} height={25} />
+                <EditIcon
+                  width={25}
+                  height={25}
+                  style={{ cursor: "pointer" }}
+                />
+                <DeleteIcon
+                  width={25}
+                  height={25}
+                  style={{ cursor: "pointer" }}
+                />
               </div>
             </div>
           ))}
