@@ -4,14 +4,16 @@ import { v4 as uuid } from "uuid";
 import { ReactComponent as EditIcon } from "./assets/edit-solid.svg";
 import { ReactComponent as DeleteIcon } from "./assets/trash-solid.svg";
 import { ReactComponent as PlusIcon } from "./assets/plus-square-regular.svg";
+import { ReactComponent as SaveIcon } from "./assets/save-solid.svg";
 
 function App() {
   const [todo, setTodo] = useState("");
+  const [newTodo, setNewTodo] = useState("");
   const [todoList, setTodoList] = useState([]);
   const addTodo = () => {
     setTodoList((prevTodoList) => [
       ...prevTodoList,
-      { id: uuid(), todo, isCompleted: false },
+      { id: uuid(), todo, isCompleted: false, isEdit: false },
     ]);
     setTodo("");
   };
@@ -27,6 +29,26 @@ function App() {
   const deleteTodo = (id) => {
     setTodoList((prevTodoList) =>
       prevTodoList.filter((todoItem) => todoItem.id !== id)
+    );
+  };
+  const editTodo = (id, todo) => {
+    setNewTodo(todo);
+    setTodoList((prevTodoList) =>
+      prevTodoList.map((todoItem) =>
+        todoItem.id === id
+          ? { ...todoItem, isEdit: !todoItem.isEdit }
+          : todoItem
+      )
+    );
+  };
+  const saveTodo = (id) => {
+    setNewTodo(todo);
+    setTodoList((prevTodoList) =>
+      prevTodoList.map((todoItem) =>
+        todoItem.id === id
+          ? { ...todoItem, isEdit: !todoItem.isEdit, todo: newTodo }
+          : todoItem
+      )
     );
   };
   useEffect(() => {
@@ -74,22 +96,40 @@ function App() {
                   onChange={() => setTodoCompleted(todoItem.id)}
                   style={{ cursor: "pointer" }}
                 />
-                <label
-                  style={{ cursor: "pointer" }}
-                  htmlFor={todoItem.id}
-                  className={`h5 ${
-                    todoItem.isCompleted ? "text-decoration-line-through" : ""
-                  }`}
-                >
-                  {todoItem.todo}
-                </label>
+                {todoItem.isEdit ? (
+                  <Form.Control
+                    value={newTodo}
+                    onChange={(e) => setNewTodo(e.target.value)}
+                  />
+                ) : (
+                  <label
+                    style={{ cursor: "pointer" }}
+                    htmlFor={todoItem.id}
+                    className={`h5 ${
+                      todoItem.isCompleted ? "text-decoration-line-through" : ""
+                    }`}
+                  >
+                    {todoItem.todo}
+                  </label>
+                )}
               </div>
               <div className="d-flex gap-3  justify-content-center align-items-center ">
-                <EditIcon
-                  width={25}
-                  height={25}
-                  style={{ cursor: "pointer" }}
-                />
+                {todoItem.isEdit ? (
+                  <SaveIcon
+                    width={25}
+                    height={25}
+                    onClick={() => saveTodo(todoItem.id)}
+                    style={{ cursor: "pointer" }}
+                  />
+                ) : (
+                  <EditIcon
+                    width={25}
+                    height={25}
+                    onClick={() => editTodo(todoItem.id, todoItem.todo)}
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+
                 <DeleteIcon
                   width={25}
                   height={25}
