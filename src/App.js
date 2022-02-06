@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { v4 as uuid } from "uuid";
 
 function App() {
   const [todo, setTodo] = useState("");
-  const [todoList, setTodoList] = useState([
-    "clean home",
-    "do homework",
-    "write code",
-  ]);
+  const [todoList, setTodoList] = useState([]);
   const addTodo = () => {
-    setTodoList((prevState) => [...prevState, todo]);
+    setTodoList((prevState) => [...prevState, { id: uuid(), todo }]);
     setTodo("");
   };
+  useEffect(() => {
+    console.log(todoList);
+  }, [todoList]);
   return (
     <div
       className="d-flex justify-content-center w-100"
@@ -31,8 +31,8 @@ function App() {
         </div>
 
         <div className="d-flex mt-3 flex-column w-75">
-          {todoList.map((todo, index) => (
-            <div key={index}>{todo}</div>
+          {todoList.map((todoItem) => (
+            <div key={todoItem.id}>{todoItem.todo}</div>
           ))}
         </div>
       </div>
